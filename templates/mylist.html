@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Search Movies{% endblock %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="alert alert-success">
+        {% for msg in messages %}
+            <li>{{ msg }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+    {% if movies %}
+        {% for movie in movies %}
+            <div>
+                <p>{{movie.ranking}}</p>
+                <p>{{movie.title}}({{movie.year}})</p>
+                <p>{{movie.review}}</p>
+                <p>{{movie.rating}}</p>
+                <p>{{movie.description}}</p>
+                <img src="{{movie.img_url}}" alt="movie img">
+                <div class="button-container">
+                    <a href="{{url_for('edit', id=movie['id'], msg='Movie just updated')}}" class="button" aria-label="Update {{ movie['title'] }}">Update</a>
+                    <a href="{{url_for('delete', id=movie['id'])}}" class="button delete-button" aria-label="Delete {{ movie['title'] }}">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No movies yet</p>
+    {% endif %}
+{% endblock %}

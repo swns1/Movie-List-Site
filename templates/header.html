@@ -1,0 +1,20 @@
+    <header class="header">
+        <div class="header-content">
+            <a href="{{url_for('home')}}" class="logo">Your Movie List</a>
+            <nav>
+                <ul class="nav-links">
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{url_for('search_movies')}}">Search</a></li>
+                    {% endif %}
+                    {% if not current_user.is_authenticated %}
+                    <li><a href="{{url_for('login')}}">Login</a></li>
+                    <li><a href="{{url_for('register')}}">Register</a></li>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    <li><a href="{{url_for('my_list')}}">My List</a></li>
+                    <li><a href="{{url_for('logout')}}">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
