@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Search Movies{% endblock %}
+{% block title %}My Movies{% endblock %}
 
 {% block content %}
     {% with messages = get_flashed_messages() %}
@@ -12,22 +12,58 @@
         </ul>
     {% endif %}
     {% endwith %}
+    
+    <div class="page-header">
+        <h1>My Movie Collection</h1>
+        <p>Your personal movie ratings and reviews</p>
+    </div>
+    
     {% if movies %}
-        {% for movie in movies %}
-            <div>
-                <p>{{movie.ranking}}</p>
-                <p>{{movie.title}}({{movie.year}})</p>
-                <p>{{movie.review}}</p>
-                <p>{{movie.rating}}</p>
-                <p>{{movie.description}}</p>
-                <img src="{{movie.img_url}}" alt="movie img">
-                <div class="button-container">
-                    <a href="{{url_for('edit', id=movie['id'], msg='Movie just updated')}}" class="button" aria-label="Update {{ movie['title'] }}">Update</a>
-                    <a href="{{url_for('delete', id=movie['id'])}}" class="button delete-button" aria-label="Delete {{ movie['title'] }}">Delete</a>
+        <div class="movies-grid">
+            {% for movie in movies %}
+                <div class="movie-card">
+                    <div class="movie-card-inner">
+                        <!-- Front of card -->
+                        <div class="movie-card-front">
+                            <div class="movie-poster">
+                                <img src="{{movie.img_url}}" alt="{{movie.title}} poster">
+                                <div class="movie-ranking">#{{movie.ranking}}</div>
+                            </div>
+                            <div class="movie-title">
+                                <h3>{{movie.title}}</h3>
+                                <span class="movie-year">({{movie.year}})</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Back of card -->
+                        <div class="movie-card-back">
+                            <div class="movie-info">
+                                <h3>{{movie.title}}</h3>
+                                <div class="movie-rating">
+                                    <span class="rating-stars">★★★★★</span>
+                                    <span class="rating-text">{{movie.rating}}/10</span>
+                                </div>
+                                <p class="movie-description">{{movie.description}}</p>
+                                <div class="movie-review">
+                                    <strong>My Review:</strong>
+                                    <p>{{movie.review}}</p>
+                                </div>
+                                <div class="movie-actions">
+                                    <a href="{{url_for('edit', id=movie['id'], msg='Movie just updated')}}" class="btn btn-edit" aria-label="Update {{ movie['title'] }}">Update</a>
+                                    <a href="{{url_for('delete', id=movie['id'])}}" class="btn btn-delete" aria-label="Delete {{ movie['title'] }}">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     {% else %}
-        <p>No movies yet</p>
+        <div class="empty-state">
+            <div class="empty-icon">🎬</div>
+            <h2>No movies in your collection yet</h2>
+            <p>Start building your movie list by searching for movies!</p>
+            <a href="{{url_for('search_movies')}}" class="btn btn-primary">Search Movies</a>
+        </div>
     {% endif %}
 {% endblock %}
