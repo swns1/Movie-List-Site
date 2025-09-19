@@ -6,9 +6,14 @@ from form import LoginForm, RegisterForm, MovieForm, SearchMovie
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 from api import MovieApi
+import random, requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+API_KEY = os.getenv("TMDB_API_KEY")
 
 class Base(DeclarativeBase):
     pass
@@ -50,7 +55,12 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    url = "https://api.themoviedb.org/3/discover/movie"
+    params = {"api_key": API_KEY, "page": random.randint(1, 500)}
+    response = requests.get(url, params=params)
+    movies = response.json()["results"]
+
+    return render_template("index.html", movies=movies)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

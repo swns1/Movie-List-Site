@@ -12,5 +12,47 @@
         </ul>
     {% endif %}
     {% endwith %}
-    <h1>{{current_user.name}}</h1>
+
+    {% if movies %}
+        <div class="search-results">
+            <h2>Discover Movies</h2>
+            <div class="movies-grid">
+                {% for movie in movies %}
+                    <div class="movie-card search-result-card">
+                        <div class="movie-card-inner">
+                            <!-- Front of card -->
+                            <div class="movie-card-front">
+                                <div class="movie-poster">
+                                    <img src='https://image.tmdb.org/t/p/w500{{ movie.backdrop_path }}' alt="{{movie.title}} poster">
+                                </div>
+                                <div class="movie-title">
+                                    <h3>{{movie.title}}</h3>
+                                    <span class="movie-year">({{ movie.release_date[:4] if movie.release_date else 'N/A' }})</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Back of card -->
+                            <div class="movie-card-back">
+                                <div class="movie-info">
+                                    <h3>{{movie.title}}</h3>
+                                    <div class="movie-rating">
+                                        <span class="rating-stars">★★★★★</span>
+                                        <span class="rating-text">{{movie.vote_average}}/10</span>
+                                    </div>
+                                    <p class="movie-description">{{movie.overview[:150]}}{% if movie.overview|length > 150 %}...{% endif %}</p>
+                                    <div class="movie-details">
+                                        <p><strong>Release:</strong> {{ movie.release_date[:4] if movie.release_date else 'N/A' }}</p>
+                                        <p><strong>Popularity:</strong> {{movie.popularity}}</p>
+                                    </div>
+                                    <div class="movie-actions">
+                                        <a href="{{ url_for('add_movies', title=movie.title)}}" class="btn btn-add">Add to My List</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}
