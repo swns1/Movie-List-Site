@@ -131,23 +131,27 @@ def search_movies():
 
 @app.route("/add")
 def add_movies():
-    title = request.args.get("title")
-    movie = MovieApi(title)
-    data = movie.data
+    if current_user.is_authenticated:
+        title = request.args.get("title")
+        movie = MovieApi(title)
+        data = movie.data
 
-    new_movie = Movies(
-        user_id=current_user.id,
-        title=data[0]["title"],
-        year=data[0]["release_date"][:4],
-        description=data[0]["overview"],
-        rating=None,
-        ranking=None,
-        review=None,
-        img_url=f"https://image.tmdb.org/t/p/w500{data[0]["backdrop_path"]}"
-    )
-    db.session.add(new_movie)
-    db.session.commit()
-    msg= "Movie just added to your list"
+        new_movie = Movies(
+            user_id=current_user.id,
+            title=data[0]["title"],
+            year=data[0]["release_date"][:4],
+            description=data[0]["overview"],
+            rating=None,
+            ranking=None,
+            review=None,
+            img_url=f"https://image.tmdb.org/t/p/w500{data[0]["backdrop_path"]}"
+        )
+        db.session.add(new_movie)
+        db.session.commit()
+        msg= "Movie just added to your list"
+    else:
+        flash("Please login first")
+        return redirect(url_for("login"))
     return redirect(url_for("edit", id=new_movie.id, msg=msg))
 
 @app.route("/edit", methods=["GET", "POST"])
