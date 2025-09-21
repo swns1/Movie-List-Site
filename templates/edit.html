@@ -138,6 +138,15 @@ textarea.form-control {
 </style>
 
 <div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="alert alert-success">
+        {% for msg in messages %}
+            <li>{{ msg }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
     <div class="content">
         <h1 class="heading">{{ movie["title"] }}</h1>
         <form action="{{url_for('edit', id=movie.id)}}" method="post">

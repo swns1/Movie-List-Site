@@ -162,6 +162,15 @@ def edit():
     movie = db.get_or_404(Movies, id)
 
     if request.method == "POST":
+        duplicate = Movies.query.filter_by(
+            user_id=current_user.id,
+            ranking=form.ranking.data
+        ).first()
+
+        if duplicate and duplicate.id != movie.id:
+            flash(f"Ranking {form.ranking.data} is already taken by '{duplicate.title}'. Please choose another one.")
+            return redirect(url_for("edit", id=movie.id))
+
         movie.rating = float(form.rating.data)
         movie.review = form.review.data
         movie.ranking = int(form.ranking.data)
@@ -169,7 +178,8 @@ def edit():
         return redirect(url_for("my_list"))
     
     if request.method == "GET":
-        flash(message)
+        if message:
+            flash(message)
         form.rating.data = movie.rating
         form.review.data = movie.review
         form.ranking.data = movie.ranking
@@ -178,7 +188,7 @@ def edit():
 
 @app.route("/my_list")
 def my_list():
-    movies = current_user.movies
+    movies = Movies.query.filter_by(user_id=current_user.id).order_by(Movies.ranking.desc()).all()
     return render_template("mylist.html", movies=movies)
 
 @app.route('/delete')
